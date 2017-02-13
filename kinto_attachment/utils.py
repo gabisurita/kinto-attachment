@@ -31,6 +31,7 @@ class AttachmentRouteFactory(RouteFactory):
         self.resource_name = 'record'
         try:
             resource = Record(request, context=self)
+            resource.request.validated = {'header': {}, 'querystring': {}}
             request.current_resource_name = 'record'
             existing = resource.get()
         except httpexceptions.HTTPNotFound:
@@ -86,7 +87,7 @@ def patch_record(record, request):
     request.matched_route.pattern = record_pattern
 
     # Simulate update of fields.
-    request.validated = record
+    request.validated = {'header': {}, 'querystring': {}, 'body': record}
     request.body = json.dumps(record).encode('utf-8')
     resource = Record(request, context=context)
     request.current_resource_name = 'record'
